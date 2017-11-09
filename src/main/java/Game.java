@@ -17,10 +17,7 @@ public class Game {
         // Game loop
         while(true){
 
-            boolean is_full = mb.fallSet(board); // check if we have 0 on the board or not for testing
-            while(!is_full){ // do the loop until full equal to true
-                is_full = mb.fallSet(board);
-            }
+            //mb.fallSet(board); // check if we have 0 on the board or not for testing
             printBoard();
             //Make the swap input function
             mb.swapBoard(board);
@@ -28,12 +25,12 @@ public class Game {
             mb.dupCheck(board); // check for duplication on the board
 
             printBoard(); // board print out
-            TimeUnit.SECONDS.sleep(3); // for delaying when the program too fast
+            //TimeUnit.SECONDS.sleep(3); // for delaying when the program too fast
 
         }
     }
 
-    private void printBoard(){ // print to check the board candy
+    public void printBoard(){ // print to check the board candy
         System.out.println("");
         System.out.println("");
         for(int i = 0; i < 6; i++){

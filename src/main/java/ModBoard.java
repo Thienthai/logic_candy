@@ -115,141 +115,152 @@ class ModBoard {
     }
 
     //Set the falling position from the null cell
-    public boolean fallSet(ArrayList<Integer>[][] board){
+    public void fallSet(ArrayList<Integer>[][] board){
 
-        boolean is_full = true; // For checking that if we have unfinished null block
+        boolean is_full = false; // For checking that if we have unfinished null block
 
-        for(int i = 0; i < 6;i++) {
-            for (int j = 0; j < 6; j++) {
+        while(!is_full) // we keep do it until we get full board
+        {
+            is_full = true;
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 6; j++) {
 
-                // If the current position is equal to 0 and the row is not on 0 index
-                if (board[i][j].get(0) == 0 && i != 0) {
+                    // If the current position is equal to 0 and the row is not on 0 index
+                    if (board[i][j].get(0) == 0 && i != 0) {
 
-                    is_full = false; // we see 0 the board still have null
+                        is_full = false; // we see 0 the board still have null
 
-                    int upperNumber = board[i - 1][j].get(0); //get number from the upper row
+                        int upperNumber = board[i - 1][j].get(0); //get number from the upper row
 
-                    //set the position current to be upper number
-                    board[i][j].clear();
-                    board[i][j].add(upperNumber);
+                        //set the position current to be upper number
+                        board[i][j].clear();
+                        board[i][j].add(upperNumber);
 
-                    //set the upper position to be equal to 0
-                    board[i - 1][j].clear();
-                    board[i - 1][j].add(0);
+                        //set the upper position to be equal to 0
+                        board[i - 1][j].clear();
+                        board[i - 1][j].add(0);
+
+                    }
+
+                    // If the current position is equal to 0 and the row is on 0 index
+                    else if (board[i][j].get(0) == 0 && i == 0) {
+
+                        is_full = false; // we see 0 the board still have null
+
+                        // set the position to be the random number bwtween 1 - 4
+                        board[i][j].clear();
+                        board[i][j].add(r.nextInt(4) + 1);
+
+                    }
 
                 }
-
-                // If the current position is equal to 0 and the row is on 0 index
-                else if(board[i][j].get(0) == 0 && i == 0){
-
-                    is_full = false; // we see 0 the board still have null
-
-                    // set the position to be the random number bwtween 1 - 4
-                    board[i][j].clear();
-                    board[i][j].add(r.nextInt(4)+1);
-
-                }
-
             }
         }
-
-        return  is_full;
-
     }
 
     //Check the duplication more than 3 cell
     public void dupCheck(ArrayList<Integer>[][] board){
+        boolean dup_complete = false; // use to check if we complete dup check or not
 
-        // Clone things for row_Board and Column board
-        ArrayList<Integer>[][] row_Board = new ArrayList[6][6];
-        ArrayList<Integer>[][] col_Board = new ArrayList[6][6];
-        cloneArray(board,row_Board);
-        cloneArray(board,col_Board);
+        while(!dup_complete) {
+            dup_complete = true;
+            // Clone things for row_Board and Column board
+            ArrayList<Integer>[][] row_Board = new ArrayList[6][6];
+            ArrayList<Integer>[][] col_Board = new ArrayList[6][6];
+            cloneArray(board, row_Board);
+            cloneArray(board, col_Board);
 
-        int dup_num = 1;
-        int sus_num = -1; // create suspecious number
+            int dup_num = 1;
+            int sus_num = -1; // create suspecious number
 
-        //check on the vertical first
-        for(int j = 0; j < 6;j++){
-            for(int i = 1; i < 6;i++){
+            //check on the vertical first
+            for (int j = 0; j < 6; j++) {
+                for (int i = 1; i < 6; i++) {
 
-                // we see the duplication by compare to the previous one
-                if(row_Board[i][j].get(0) == row_Board[i-1][j].get(0)){
-                    sus_num = row_Board[i-1][j].get(0); // make suspicous to be the previous one
-                    dup_num+=1;
-                }else{
-                    //in case that it the upper is all null we need to check on sus_num instead
-                    if(row_Board[i-1][j].get(0) == 0 && row_Board[i][j].get(0) == sus_num){
-                        dup_num+=1; // increase the dup number like before
-                    }else {
-                        dup_num = 1; // if we don't see anything we start a new count and set sus_num back to 0
-                        sus_num = -1;
+                    // we see the duplication by compare to the previous one
+                    if (col_Board[i][j].get(0) == col_Board[i - 1][j].get(0)) {
+                        sus_num = col_Board[i - 1][j].get(0); // make suspicous to be the previous one
+                        dup_num += 1;
+                    } else {
+                        //in case that it the upper is all null we need to check on sus_num instead
+                        if (col_Board[i - 1][j].get(0) == 0 && col_Board[i][j].get(0) == sus_num) {
+                            dup_num += 1; // increase the dup number like before
+                        } else {
+                            dup_num = 1; // if we don't see anything we start a new count and set sus_num back to 0
+                            sus_num = -1;
+                        }
+                    }
+
+                    // we will start to set null if more than or equal to three
+                    if (dup_num >= 3) {
+
+                        dup_complete = false; // see dup occur so we still not complete
+
+                        System.out.println("see dup in " + i + " " + j);
+
+                        for (int k = 0; k < dup_num; k++) //loop back to the previous dup_num times and set it all to 0
+                        {
+                            col_Board[i - ((dup_num - k) - 1)][j].clear();
+                            col_Board[i - ((dup_num - k) - 1)][j].add(0);
+                        }
                     }
                 }
-
-                // we will start to set null if more than or equal to three
-                if(dup_num >= 3){
-
-                    System.out.println("see dup in " + i + " " + j);
-
-                    for(int k = 0;k < dup_num;k++) //loop back to the previous dup_num times and set it all to 0
-                    {
-                        row_Board[i - ((dup_num - k)-1)][j].clear();
-                        row_Board[i - ((dup_num - k)-1)][j].add(0);
-                    }
-                }
-
+                dup_num = 1; //reset dupnum when they increase more i
             }
-        }
 
-        dup_num = 1; // initial it to be a new one
-        sus_num = -1; // create suspecious number
+            dup_num = 1; // initial it to be a new one
+            sus_num = -1; // create suspecious number
 
-        //check on the horizontal second
-        for(int i = 0; i < 6; i ++){
-            for(int j = 1;j < 6; j ++){
+            //check on the horizontal second
+            for (int i = 0; i < 6; i++) {
+                for (int j = 1; j < 6; j++) {
 
-                // we see the duplication
-                if(row_Board[i][j].get(0) == row_Board[i][j-1].get(0)){
-                    sus_num = row_Board[i][j-1].get(0); // make suspicous to be the previous one
-                    dup_num+=1;
-                }else{
+                    // we see the duplication
+                    if (row_Board[i][j].get(0) == row_Board[i][j - 1].get(0)) {
+                        sus_num = row_Board[i][j - 1].get(0); // make suspicous to be the previous one
+                        dup_num += 1;
+                    } else {
 
-                    //in case that it the left is all null we need to check on sus_num instead
-                    if(row_Board[i][j-1].get(0) == 0 && row_Board[i][j].get(0) == sus_num){
-                        dup_num+=1; // increase the dup number like before
-                    }else {
-                        dup_num = 1; // if we don't see anything we start a new count and set sus_num back to 0
-                        sus_num = -1;
+                        //in case that it the left is all null we need to check on sus_num instead
+                        if (row_Board[i][j - 1].get(0) == 0 && row_Board[i][j].get(0) == sus_num) {
+                            dup_num += 1; // increase the dup number like before
+                        } else {
+                            dup_num = 1; // if we don't see anything we start a new count and set sus_num back to 0
+                            sus_num = -1;
+                        }
+
+                    }
+
+                    // we will start to set null if more than or equal to three
+                    if (dup_num >= 3) {
+                        dup_complete = false; // see dup occur so we still not complete
+                        System.out.println("see dup in " + i + " " + j);
+
+                        for (int k = 0; k < dup_num; k++) //loop back to the previous dup_num times and set it all to 0
+                        {
+                            row_Board[i][j - ((dup_num - k) - 1)].clear();
+                            row_Board[i][j - ((dup_num - k) - 1)].add(0);
+                        }
+                    }
+                }
+                dup_num = 1; //reset dupnum when they increase more i
+            }
+
+            // implement the solution to merge the origin with the row_Board and col_Board
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 6; j++) {
+
+                    // set the current position to be 0 if we find out that the row or col board is equal to 0
+                    if (row_Board[i][j].get(0) == 0 || col_Board[i][j].get(0) == 0) {
+                        board[i][j].clear();
+                        board[i][j].add(0);
                     }
 
                 }
-
-                // we will start to set null if more than or equal to three
-                if(dup_num >= 3){
-                    System.out.println("see dup in " + i + " " + j);
-
-                    for(int k = 0;k < dup_num;k++) //loop back to the previous dup_num times and set it all to 0
-                    {
-                        row_Board[i][j - ((dup_num - k)-1)].clear();
-                        row_Board[i][j - ((dup_num - k)-1)].add(0);
-                    }
-                }
-
             }
-        }
+            printBoard(board);
+            fallSet(board); // set the null block so the board will be full for check again next round
 
-        // implement the solution to merge the origin with the row_Board and col_Board
-        for(int i = 0;i < 6;i++){
-            for(int j = 0;j < 6;j++){
-
-                // set the current position to be 0 if we find out that the row or col board is equal to 0
-                if(row_Board[i][j].get(0) == 0 || col_Board[i][j].get(0) == 0){
-                    board[i][j].clear();
-                    board[i][j].add(0);
-                }
-
-            }
         }
     }
 
@@ -363,6 +374,19 @@ class ModBoard {
         board[3][0].add(1);
 
 
+    }
+
+    public void printBoard(ArrayList<Integer>[][] board){ // print to check the board candy
+        System.out.println("");
+        System.out.println("");
+        for(int i = 0; i < 6; i++){
+            for(int j = 0; j < 6; j++){
+                System.out.print(board[i][j].get(0) + " ");
+            }
+            System.out.println("");
+        }
+        System.out.println("");
+        System.out.println("");
     }
 
 
