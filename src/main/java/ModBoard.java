@@ -159,7 +159,7 @@ class ModBoard {
     }
 
     //Check the duplication more than 3 cell
-    public void dupCheck(ArrayList<Integer>[][] board){
+    public void dupCheck(ArrayList<Integer>[][] board,Score score){
         boolean dup_complete = false; // use to check if we complete dup check or not
 
         while(!dup_complete) {
@@ -193,6 +193,7 @@ class ModBoard {
 
                     // we will start to set null if more than or equal to three
                     if (dup_num >= 3) {
+                        score.setScore(score.getScore() + 100); // adding the score when we see duplication
 
                         dup_complete = false; // see dup occur so we still not complete
 
@@ -233,6 +234,7 @@ class ModBoard {
 
                     // we will start to set null if more than or equal to three
                     if (dup_num >= 3) {
+                        score.setScore(score.getScore() + 100); // adding the score when we see duplication
                         dup_complete = false; // see dup occur so we still not complete
                         System.out.println("see dup in " + i + " " + j);
 
@@ -258,12 +260,13 @@ class ModBoard {
 
                 }
             }
-            printBoard(board);
+            printBoard(board,score);
             fallSet(board); // set the null block so the board will be full for check again next round
 
         }
     }
 
+    //clone the array from origin to destination
     public void cloneArray(ArrayList<Integer>[][] origin,ArrayList<Integer>[][] des){
 
         for(int i = 0; i < 6; i++){
@@ -275,7 +278,8 @@ class ModBoard {
 
     }
 
-    public void swapBoard(ArrayList<Integer>[][] board) throws IOException {
+    //swap the cell from origin to destination
+    public boolean swapBoard(ArrayList<Integer>[][] board) throws IOException {
 
         // get input from the user
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -288,16 +292,31 @@ class ModBoard {
         System.out.println("Select destination col that you want to swap: ");
         int des_col = Integer.parseInt(br.readLine());
 
-        int bufferInt_Origin = board[origin_row][origin_col].get(0); // keep the origin candy
-        int bufferInt_Des = board[des_row][des_col].get(0); // keep the destination candy
+        // list of position of origin that cannot swap
+        boolean false1 = (origin_col == des_col+1 && origin_row == des_row + 1);
+        boolean false2 = (origin_col == des_col+1 && origin_row == des_row - 1);
+        boolean false3 = (origin_col == des_col-1 && origin_row == des_row + 1);
+        boolean false4 = (origin_col == des_col-1 && origin_row == des_row - 1);
 
-        // delete the specific array to add new
-        board[origin_row][origin_col].clear();
-        board[des_row][des_col].clear();
+        if(false1 || false2 || false3 || false4){
+            System.out.println("FALSE POSITION NO SWAP");
+            System.out.println(" ");
+            System.out.println(" ");
+            return false;
+        }else {
 
-        // swap the candy
-        board[origin_row][origin_col].add(bufferInt_Des);
-        board[des_row][des_col].add(bufferInt_Origin);
+            int bufferInt_Origin = board[origin_row][origin_col].get(0); // keep the origin candy
+            int bufferInt_Des = board[des_row][des_col].get(0); // keep the destination candy
+
+            // delete the specific array to add new
+            board[origin_row][origin_col].clear();
+            board[des_row][des_col].clear();
+
+            // swap the candy
+            board[origin_row][origin_col].add(bufferInt_Des);
+            board[des_row][des_col].add(bufferInt_Origin);
+            return true;
+        }
 
     }
 
@@ -376,8 +395,9 @@ class ModBoard {
 
     }
 
-    public void printBoard(ArrayList<Integer>[][] board){ // print to check the board candy
-        System.out.println("");
+    //print out the board
+    public void printBoard(ArrayList<Integer>[][] board,Score score){ // print to check the board candy
+        System.out.println("Duplication Occur");
         System.out.println("");
         for(int i = 0; i < 6; i++){
             for(int j = 0; j < 6; j++){
@@ -385,6 +405,7 @@ class ModBoard {
             }
             System.out.println("");
         }
+        System.out.println("Score: "+ score.getScore());
         System.out.println("");
         System.out.println("");
     }

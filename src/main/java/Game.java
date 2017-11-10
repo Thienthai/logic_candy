@@ -4,34 +4,36 @@ import java.util.concurrent.TimeUnit;
 
 public class Game {
 
-    ArrayList<Integer>[][] board;
+    private ArrayList<Integer>[][] board;
 
     public void start() throws InterruptedException, IOException {
         board = new ArrayList[6][6];
         ModBoard mb = new ModBoard();
+        Score score = new Score(); // create new score
         mb.initBoard(board); // create and then initailize the board
         //mb.setNullCandy(board); // Set null to candy for testing purpose
         //mb.testCase(board);// create test case for testing purpose
-        printBoard();
+        printBoard(score);
 
         // Game loop
         while(true){
 
             //mb.fallSet(board); // check if we have 0 on the board or not for testing
-            printBoard();
+            //printBoard();
             //Make the swap input function
-            mb.swapBoard(board);
-            printBoard();
-            mb.dupCheck(board); // check for duplication on the board
+            if(mb.swapBoard(board))
+                //printBoard();
+                mb.dupCheck(board,score); // check for duplication on the board
 
-            printBoard(); // board print out
+            System.out.println("check the score " + score);
+            printBoard(score); // board print out
             //TimeUnit.SECONDS.sleep(3); // for delaying when the program too fast
 
         }
     }
 
-    public void printBoard(){ // print to check the board candy
-        System.out.println("");
+    public void printBoard(Score score){ // print to check the board candy
+        System.out.println("Result");
         System.out.println("");
         for(int i = 0; i < 6; i++){
             for(int j = 0; j < 6; j++){
@@ -39,6 +41,7 @@ public class Game {
             }
             System.out.println("");
         }
+        System.out.println("Score: "+ score.getScore());
         System.out.println("");
         System.out.println("");
     }
