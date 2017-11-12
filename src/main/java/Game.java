@@ -25,7 +25,8 @@ public class Game {
                 //printBoard();
                 mb.dupCheck(board,score); // check for duplication on the board
 
-            System.out.println("check the score " + score);
+            System.out.println("==============================================");
+
             printBoard(score); // board print out
             //TimeUnit.SECONDS.sleep(3); // for delaying when the program too fast
 

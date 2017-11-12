@@ -197,8 +197,6 @@ class ModBoard {
 
                         dup_complete = false; // see dup occur so we still not complete
 
-                        System.out.println("see dup in " + i + " " + j);
-
                         for (int k = 0; k < dup_num; k++) //loop back to the previous dup_num times and set it all to 0
                         {
                             col_Board[i - ((dup_num - k) - 1)][j].clear();
@@ -236,7 +234,6 @@ class ModBoard {
                     if (dup_num >= 3) {
                         score.setScore(score.getScore() + 100); // adding the score when we see duplication
                         dup_complete = false; // see dup occur so we still not complete
-                        System.out.println("see dup in " + i + " " + j);
 
                         for (int k = 0; k < dup_num; k++) //loop back to the previous dup_num times and set it all to 0
                         {
@@ -292,19 +289,14 @@ class ModBoard {
         System.out.println("Select destination col that you want to swap: ");
         int des_col = Integer.parseInt(br.readLine());
 
-        // list of position of origin that cannot swap
-        boolean false1 = (origin_col == des_col+1 && origin_row == des_row + 1);
-        boolean false2 = (origin_col == des_col+1 && origin_row == des_row - 1);
-        boolean false3 = (origin_col == des_col-1 && origin_row == des_row + 1);
-        boolean false4 = (origin_col == des_col-1 && origin_row == des_row - 1);
+        // list of position of origin is possible
+        boolean false1 = (origin_col == des_col && origin_row == des_row + 1);
+        boolean false2 = (origin_col == des_col && origin_row == des_row - 1);
+        boolean false3 = (origin_row == des_row && origin_row == des_col + 1);
+        boolean false4 = (origin_row == des_row && origin_row == des_col - 1);
 
+        // if it true either one of the four the position is legit else it is not and we will not swap
         if(false1 || false2 || false3 || false4){
-            System.out.println("FALSE POSITION NO SWAP");
-            System.out.println(" ");
-            System.out.println(" ");
-            return false;
-        }else {
-
             int bufferInt_Origin = board[origin_row][origin_col].get(0); // keep the origin candy
             int bufferInt_Des = board[des_row][des_col].get(0); // keep the destination candy
 
@@ -316,6 +308,12 @@ class ModBoard {
             board[origin_row][origin_col].add(bufferInt_Des);
             board[des_row][des_col].add(bufferInt_Origin);
             return true;
+        }else {
+
+            System.out.println("FALSE POSITION NO SWAP");
+            System.out.println(" ");
+            System.out.println(" ");
+            return false;
         }
 
     }
